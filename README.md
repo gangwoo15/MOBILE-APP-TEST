@@ -25,8 +25,6 @@
 
 <hr>
 
-<hr>
-
 <h2>1일차 작업 기록</h2>
 
 <h3>진행한 작업</h3>
@@ -35,4 +33,4 @@
 </ul>
 
 <p><b>메인 화면 UI</b></p>
-<img src="./images/day1.png" width="300">
+<img src="C:\Users\user\Desktop\android\MOBILEAPPTEST\images\day1.png" width="300">
