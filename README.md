@@ -25,3 +25,18 @@
 
 <hr>
 
+<hr>
+
+<h2>📆 1일차 작업 기록</h2>
+
+<h3>진행한 작업</h3>
+<ul>
+  <li>Jetpack Compose 프로젝트 생성</li>
+  <li>MainScreen UI 초안 제작</li>
+  <li>ViewModel 생성 및 기본 데이터 연결</li>
+</ul>
+
+<h3>📸 화면 캡처</h3>
+
+<p><b>메인 화면 UI</b></p>
+<img src="./images/day1_ui.png" width="300">
