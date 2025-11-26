@@ -33,4 +33,4 @@
 </ul>
 
 <p><b>메인 화면 UI</b></p>
-<img src="C:\Users\user\Desktop\android\MOBILEAPPTEST\images\day1.png" width="300">
+<img src=".\images\day1.png" width="300">
