@@ -46,8 +46,8 @@
 </ul>
 
 <p><b>일정 추가 화면</b></p>
-<img src="images/day2_1.png" width="300">
 <img src="images/day2_2.png" width="300">
 <img src="images/day2_3.png" width="300">
+<img src="images/day2_1.png" width="300">
 
 <hr>
