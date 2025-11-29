@@ -2,14 +2,15 @@ package com.example.mobile_app_test.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -17,15 +18,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobile_app_test.ui.components.AddScheduleDialog
 import com.example.mobile_app_test.ui.components.StatCard
+import com.example.mobile_app_test.viewmodel.ScheduleViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun ScheduleScreen() {
+fun ScheduleScreen(
+    viewModel: ScheduleViewModel = viewModel()
+) {
     val currentDate = remember { Date() }
     val dateFormat = remember { SimpleDateFormat("yyyy년 M월 d일", Locale.KOREAN) }
     val dayFormat = remember { SimpleDateFormat("EEEE", Locale.KOREAN) }
+
+    var showAddDialog by remember { mutableStateOf(false) }
+
+    // ViewModel에서 데이터 가져오기
+    val schedules by viewModel.allSchedules.collectAsState()
+    val incompleteCount by viewModel.incompleteCount.collectAsState()
+    val completedCount by viewModel.completedCount.collectAsState()
+    val totalCount = schedules.size
 
     Box(
         modifier = Modifier
@@ -127,28 +141,28 @@ fun ScheduleScreen() {
             ) {
                 StatCard(
                     title = "전체 일정",
-                    count = 0,
+                    count = totalCount,
                     backgroundColor = Color(0xFFDCFCE7),
                     textColor = Color(0xFF16A34A),
                     modifier = Modifier.weight(1f)
                 )
                 StatCard(
                     title = "완료",
-                    count = 0,
+                    count = completedCount,
                     backgroundColor = Color(0xFFDCFCE7),
                     textColor = Color(0xFF16A34A),
                     modifier = Modifier.weight(1f)
                 )
                 StatCard(
                     title = "진행중",
-                    count = 0,
+                    count = incompleteCount,
                     backgroundColor = Color(0xFFFED7AA),
                     textColor = Color(0xFFEA580C),
                     modifier = Modifier.weight(1f)
                 )
             }
 
-            // 빈 상태
+            // 일정 목록 또는 빈 상태
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -158,46 +172,88 @@ fun ScheduleScreen() {
                     containerColor = Color.White
                 )
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Surface(
-                        modifier = Modifier.size(96.dp),
-                        shape = RoundedCornerShape(48.dp),
-                        color = Color(0xFFF3F4F6)
+                if (schedules.isEmpty()) {
+                    // 빈 상태
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Box(
-                            contentAlignment = Alignment.Center
+                        Surface(
+                            modifier = Modifier.size(96.dp),
+                            shape = RoundedCornerShape(48.dp),
+                            color = Color(0xFFF3F4F6)
                         ) {
-                            Icon(
-                                Icons.Default.DateRange,
-                                contentDescription = "Empty",
-                                tint = Color(0xFF9CA3AF),
-                                modifier = Modifier.size(48.dp)
-                            )
+                            Box(
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    Icons.Default.DateRange,
+                                    contentDescription = "Empty",
+                                    tint = Color(0xFF9CA3AF),
+                                    modifier = Modifier.size(48.dp)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Text(
+                            "등록된 일정이 없습니다",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF374151)
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            "새로운 일정을 추가해보세요",
+                            fontSize = 14.sp,
+                            color = Color(0xFF6B7280)
+                        )
+                    }
+                } else {
+                    // 일정 목록 (임시)
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(schedules) { schedule ->
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(0xFFF9FAFB)
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(16.dp)
+                                ) {
+                                    Text(
+                                        schedule.title,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    if (schedule.description.isNotBlank()) {
+                                        Text(
+                                            schedule.description,
+                                            fontSize = 14.sp,
+                                            color = Color.Gray
+                                        )
+                                    }
+                                    Text(
+                                        "마감: ${dateFormat.format(Date(schedule.dueDate))}",
+                                        fontSize = 12.sp,
+                                        color = Color(0xFF2563EB)
+                                    )
+                                }
+                            }
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        "등록된 일정이 없습니다",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = Color(0xFF374151)
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        "새로운 일정을 추가해보세요",
-                        fontSize = 14.sp,
-                        color = Color(0xFF6B7280)
-                    )
                 }
             }
 
@@ -205,7 +261,7 @@ fun ScheduleScreen() {
 
             // 추가 버튼
             Button(
-                onClick = { },
+                onClick = { showAddDialog = true },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -229,6 +285,21 @@ fun ScheduleScreen() {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            Text(
+                "일정을 추가하고 효율적으로 관리해보세요 📝",
+                fontSize = 12.sp,
+                color = Color(0xFF6B7280)
+            )
         }
+    }
+
+    // 일정 추가 다이얼로그
+    if (showAddDialog) {
+        AddScheduleDialog(
+            onDismiss = { showAddDialog = false },
+            onConfirm = { title, description, dueDate ->
+                viewModel.addSchedule(title, description, dueDate)
+            }
+        )
     }
 }
