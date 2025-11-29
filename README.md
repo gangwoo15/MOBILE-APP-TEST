@@ -47,8 +47,8 @@
 
 <p><b>일정 추가 화면</b></p>
 <p>
-  <img src="images/day2_2.png" width="300"style="margin-right:30px;">
-  <img src="images/day2_3.png" width="300"style="margin-right:30px;">
+  <img src="images/day2_2.png" width="300"style="margin-right:100px;">
+  <img src="images/day2_3.png" width="300"style="margin-right:100px;">
   <img src="images/day2_1.png" width="300">
 </p>
 
