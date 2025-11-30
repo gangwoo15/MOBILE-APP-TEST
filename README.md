@@ -52,5 +52,21 @@
   <img src="images/day2_1.png" width="300">
 </p>
 
-
 <hr>
+
+<h2>3일차 작업 기록</h2>
+<h3>진행한 작업</h3>
+<ul>
+  <li>일정 관리 버튼 추가</li>
+  <li>일정 삭제 기능 추가</li>
+  <li>남은 기한에 따라 색 표시</li>
+  <li>완료된 일정 회색처리 및 하단으로</li>
+</ul>
+
+<p><b>테스트 화면</b></p>
+<p>
+  <img src="images/day3_1.png" width="300"style="margin-right:100px;">
+  <img src="images/day3_2.png" width="300"style="margin-right:100px;">
+  <img src="images/day3_3.png" width="300"style="margin-right:100px;">
+  <img src="images/day3_4.png" width="300">
+</p>
