@@ -20,10 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobile_app_test.ui.components.AddScheduleDialog
+import com.example.mobile_app_test.ui.components.ScheduleItem
 import com.example.mobile_app_test.ui.components.StatCard
 import com.example.mobile_app_test.viewmodel.ScheduleViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.mobile_app_test.ui.components.ScheduleItem
 
 @Composable
 fun ScheduleScreen(
@@ -216,7 +218,7 @@ fun ScheduleScreen(
                         )
                     }
                 } else {
-                    // 일정 목록 (임시)
+                    // 일정 목록
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
@@ -224,38 +226,18 @@ fun ScheduleScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(schedules) { schedule ->
-                            Card(
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color(0xFFF9FAFB)
-                                )
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(16.dp)
-                                ) {
-                                    Text(
-                                        schedule.title,
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                    if (schedule.description.isNotBlank()) {
-                                        Text(
-                                            schedule.description,
-                                            fontSize = 14.sp,
-                                            color = Color.Gray
-                                        )
-                                    }
-                                    Text(
-                                        "마감: ${dateFormat.format(Date(schedule.dueDate))}",
-                                        fontSize = 12.sp,
-                                        color = Color(0xFF2563EB)
-                                    )
-                                }
-                            }
+                            ScheduleItem(
+                                schedule = schedule,
+                                onToggleComplete = { viewModel.toggleComplete(it) },
+                                onDelete = { viewModel.deleteSchedule(it) },
+                                onEdit = { /* TODO: 수정 기능은 나중에 */ }
+                            )
                         }
                     }
                 }
-            }
+
+
+            }  // Card 끝
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -290,8 +272,8 @@ fun ScheduleScreen(
                 fontSize = 12.sp,
                 color = Color(0xFF6B7280)
             )
-        }
-    }
+        }  // Column 끝
+    }  // Box 끝
 
     // 일정 추가 다이얼로그
     if (showAddDialog) {
@@ -302,4 +284,4 @@ fun ScheduleScreen(
             }
         )
     }
-}
+}  // ScheduleScreen 끝
