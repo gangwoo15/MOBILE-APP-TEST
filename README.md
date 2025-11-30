@@ -4,8 +4,8 @@
 
 <h3>조원</h3>
 <ul>
-  <li>박강준</li>
-  <li>박현수</li>
+  <li>202511052 박강준</li>
+  <li>202511056 박현수</li>
 </ul>
 
 <hr>
@@ -34,3 +34,23 @@
 
 <p><b>메인 화면 UI</b></p>
 <img src="images/day1.png" width="300">
+
+<hr>
+
+<h2>2일차 작업 기록</h2>
+<h3>진행한 작업</h3>
+<ul>
+  <li>일정 추가 기능(제목, 설명, 마감일 입력)</li>
+  <li>날짜 선택 기능</li>
+  <li>추가된 일정 목록에 표시</li>
+</ul>
+
+<p><b>일정 추가 화면</b></p>
+<p>
+  <img src="images/day2_2.png" width="300"style="margin-right:100px;">
+  <img src="images/day2_3.png" width="300"style="margin-right:100px;">
+  <img src="images/day2_1.png" width="300">
+</p>
+
+
+<hr>
