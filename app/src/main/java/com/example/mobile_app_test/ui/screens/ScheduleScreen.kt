@@ -19,13 +19,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mobile_app_test.data.Schedule
 import com.example.mobile_app_test.ui.components.AddScheduleDialog
+import com.example.mobile_app_test.ui.components.DeleteConfirmDialog
+import com.example.mobile_app_test.ui.components.EditScheduleDialog
 import com.example.mobile_app_test.ui.components.ScheduleItem
 import com.example.mobile_app_test.ui.components.StatCard
 import com.example.mobile_app_test.viewmodel.ScheduleViewModel
 import java.text.SimpleDateFormat
 import java.util.*
-import com.example.mobile_app_test.ui.components.ScheduleItem
 
 @Composable
 fun ScheduleScreen(
@@ -36,6 +38,10 @@ fun ScheduleScreen(
     val dayFormat = remember { SimpleDateFormat("EEEE", Locale.KOREAN) }
 
     var showAddDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var scheduleToDelete by remember { mutableStateOf<Schedule?>(null) }
+    var showEditDialog by remember { mutableStateOf(false) }
+    var scheduleToEdit by remember { mutableStateOf<Schedule?>(null) }
 
     // ViewModel에서 데이터 가져오기
     val schedules by viewModel.allSchedules.collectAsState()
@@ -65,72 +71,50 @@ fun ScheduleScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-                shape = RoundedCornerShape(24.dp),
+                    .padding(bottom = 16.dp),
+                shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color(0xFF2563EB)
                 )
             ) {
-                Column(
-                    modifier = Modifier.padding(24.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                Icons.Default.DateRange,
-                                contentDescription = "Calendar",
-                                tint = Color.White,
-                                modifier = Modifier.size(32.dp)
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
+                    // 왼쪽: 아이콘 + 제목
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.DateRange,
+                            contentDescription = "Calendar",
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
                             Text(
                                 "나의 일정표",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
-                        }
-                        Icon(
-                            Icons.Default.Notifications,
-                            contentDescription = "Notifications",
-                            tint = Color.White.copy(alpha = 0.8f),
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Card(
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White.copy(alpha = 0.2f)
-                        )
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Text(
-                                "오늘",
-                                fontSize = 12.sp,
-                                color = Color.White.copy(alpha = 0.9f)
-                            )
-                            Text(
-                                dateFormat.format(currentDate),
-                                fontSize = 22.sp,
+                                fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
                             )
                             Text(
-                                dayFormat.format(currentDate),
+                                "${dateFormat.format(currentDate)} ${dayFormat.format(currentDate)}",
                                 fontSize = 12.sp,
-                                color = Color.White.copy(alpha = 0.9f)
+                                color = Color.White.copy(alpha = 0.85f)
                             )
                         }
                     }
+
+                    // 오른쪽: 알림 아이콘
+                    Icon(
+                        Icons.Default.Notifications,
+                        contentDescription = "Notifications",
+                        tint = Color.White.copy(alpha = 0.8f),
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
 
@@ -168,7 +152,8 @@ fun ScheduleScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f),
+                    .weight(1f)
+                    .heightIn(min = 200.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White
@@ -221,23 +206,28 @@ fun ScheduleScreen(
                     // 일정 목록
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(16.dp),
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        contentPadding = PaddingValues(vertical = 16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(schedules) { schedule ->
                             ScheduleItem(
                                 schedule = schedule,
                                 onToggleComplete = { viewModel.toggleComplete(it) },
-                                onDelete = { viewModel.deleteSchedule(it) },
-                                onEdit = { /* TODO: 수정 기능은 나중에 */ }
+                                onDelete = {
+                                    scheduleToDelete = it
+                                    showDeleteDialog = true
+                                },
+                                onEdit = {
+                                    scheduleToEdit = it
+                                    showEditDialog = true
+                                }
                             )
                         }
                     }
                 }
-
-
-            }  // Card 끝
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -268,12 +258,12 @@ fun ScheduleScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                "일정을 추가하고 효율적으로 관리해보세요 📝",
+                "일정을 추가하고 효율적으로 관리해보세요",
                 fontSize = 12.sp,
                 color = Color(0xFF6B7280)
             )
-        }  // Column 끝
-    }  // Box 끝
+        }
+    }
 
     // 일정 추가 다이얼로그
     if (showAddDialog) {
@@ -284,4 +274,41 @@ fun ScheduleScreen(
             }
         )
     }
-}  // ScheduleScreen 끝
+
+    // 삭제 확인 다이얼로그
+    if (showDeleteDialog && scheduleToDelete != null) {
+        DeleteConfirmDialog(
+            scheduleTitle = scheduleToDelete!!.title,
+            onDismiss = {
+                showDeleteDialog = false
+                scheduleToDelete = null
+            },
+            onConfirm = {
+                scheduleToDelete?.let { viewModel.deleteSchedule(it) }
+                scheduleToDelete = null
+            }
+        )
+    }
+
+    // 일정 수정 다이얼로그
+    if (showEditDialog && scheduleToEdit != null) {
+        EditScheduleDialog(
+            schedule = scheduleToEdit!!,
+            onDismiss = {
+                showEditDialog = false
+                scheduleToEdit = null
+            },
+            onConfirm = { title, description, dueDate ->
+                scheduleToEdit?.let { schedule ->
+                    val updatedSchedule = schedule.copy(
+                        title = title,
+                        description = description,
+                        dueDate = dueDate
+                    )
+                    viewModel.updateSchedule(updatedSchedule)
+                }
+                scheduleToEdit = null
+            }
+        )
+    }
+}
