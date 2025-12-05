@@ -89,3 +89,8 @@
 </p>
 
 <hr>
+
+<p><b>이스터에그</b></p>
+<p>
+  <img src="images/MOGW.png" width="300"style="margin-right:100px;">
+  <img src="images/MOHS.png" width="300"style="margin-right:100px;">
