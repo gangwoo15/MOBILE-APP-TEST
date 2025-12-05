@@ -28,6 +28,9 @@ import com.example.mobile_app_test.ui.components.StatCard
 import com.example.mobile_app_test.viewmodel.ScheduleViewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import com.example.mobile_app_test.ui.components.EasterEggDialog
+import java.util.Calendar
+import com.example.mobile_app_test.ui.components.EasterEggDialog2
 
 @Composable
 fun ScheduleScreen(
@@ -42,6 +45,8 @@ fun ScheduleScreen(
     var scheduleToDelete by remember { mutableStateOf<Schedule?>(null) }
     var showEditDialog by remember { mutableStateOf(false) }
     var scheduleToEdit by remember { mutableStateOf<Schedule?>(null) }
+    var showEasterEgg by remember { mutableStateOf(false) }
+    var showEasterEgg2 by remember { mutableStateOf(false) }
 
     // ViewModel에서 데이터 가져오기
     val schedules by viewModel.allSchedules.collectAsState()
@@ -270,6 +275,22 @@ fun ScheduleScreen(
         AddScheduleDialog(
             onDismiss = { showAddDialog = false },
             onConfirm = { title, description, dueDate ->
+                // 이스터에그 체크
+                val calendar = Calendar.getInstance()
+                calendar.timeInMillis = dueDate
+                val month = calendar.get(Calendar.MONTH) + 1 // 0-based
+                val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+                // MOGW + 8월 15일
+                if (title.equals("MOGW", ignoreCase = true) && month == 8 && day == 15) {
+                    showEasterEgg = true
+                }
+
+                // MOHS + 1월 2일
+                if (title.equals("MOHS", ignoreCase = true) && month == 1 && day == 2) {
+                    showEasterEgg2 = true
+                }
+
                 viewModel.addSchedule(title, description, dueDate)
             }
         )
@@ -309,6 +330,20 @@ fun ScheduleScreen(
                 }
                 scheduleToEdit = null
             }
+        )
+    }
+
+// 이스터에그 다이얼로그 - MOGW
+    if (showEasterEgg) {
+        EasterEggDialog(
+            onDismiss = { showEasterEgg = false }
+        )
+    }
+
+    // 이스터에그 다이얼로그 - MOHS
+    if (showEasterEgg2) {
+        EasterEggDialog2(
+            onDismiss = { showEasterEgg2 = false }
         )
     }
 }
