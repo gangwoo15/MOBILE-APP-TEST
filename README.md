@@ -70,3 +70,27 @@
   <img src="images/day3_3.png" width="300"style="margin-right:100px;">
   <img src="images/day3_4.png" width="300">
 </p>
+
+<hr>
+
+<h2>4일차 작업 기록</h2>
+<h3>진행한 작업</h3>
+<ul>
+  <li>일정 수정 기능</li>
+  <li>일정 삭제시 안내 문구</li>
+  <li>ui 수정</li>
+</ul>
+
+<p><b>테스트 화면</b></p>
+<p>
+  <img src="images/day4_1.png" width="300"style="margin-right:100px;">
+  <img src="images/day4_2.png" width="300"style="margin-right:100px;">
+  <img src="images/day4_3.png" width="300">
+</p>
+
+<hr>
+
+<p><b>이스터에그</b></p>
+<p>
+  <img src="images/MOGW.png" width="300"style="margin-right:100px;">
+  <img src="images/MOHS.png" width="300"style="margin-right:100px;">
